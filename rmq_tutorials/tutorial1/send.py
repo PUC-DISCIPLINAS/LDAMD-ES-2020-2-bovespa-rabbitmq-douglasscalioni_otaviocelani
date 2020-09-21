@@ -1,6 +1,7 @@
 import os
 import pika
 
+# connection
 url = os.environ.get('CLOUDAMQP_URL', 'amqps://reprqike:LxlfkjAzqgRfsLIU2_3ZLWnCpaoN4WSb@jackal.rmq.cloudamqp.com/reprqike')
 params = pika.URLParameters(url)
 params.socket_timeout = 5
