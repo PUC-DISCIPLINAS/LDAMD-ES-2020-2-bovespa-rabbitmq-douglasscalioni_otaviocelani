@@ -23,7 +23,7 @@ Sistema destinado ao funcionamento em uma corretora de bolsa de valores, como a 
 - tem infraestrutura de nuvem, gratuito.
 - setup mais fácil do que o kafka
 
-### Diretórios
+### Estrutura dos Diretórios
 
 #### broker-bovespa
 
