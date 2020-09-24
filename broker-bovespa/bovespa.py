@@ -11,32 +11,64 @@ params.socket_timeout = 5
 connection = pika.BlockingConnection(params)
 
 # channel
-channel = connection.channel()
+broker_channel = connection.channel()
+bolsa_channel = connection.channel()
 
 # exchange
-channel.exchange_declare(exchange='BROKER', exchange_type='topic')
+broker_channel.exchange_declare(exchange='BROKER', exchange_type='topic')
+bolsa_channel.exchange_declare(exchange='BOLSADEVALORES', exchange_type='topic')
 
 # queues
-channel.queue_declare(queue='ordens_venda', exclusive=True)
-channel.queue_declare(queue='ordens_compra', exclusive=True)
+broker_channel.queue_declare(queue='broker_q')
 
 '''binding_keys = sys.argv[1:]
 if not binding_keys:
     sys.stderr.write("Usage: %s [binding_key]...\n" % sys.argv[0])
     sys.exit(1)'''
 
-channel.queue_bind(exchange='BROKER', queue='ordens_venda', routing_key='venda.*')
-channel.queue_bind(exchange='BROKER', queue='ordens_compra', routing_key='compra.*')
-
+# consume
+broker_channel.queue_bind(exchange='BROKER', queue='broker_q', routing_key='#')
 
 print(' [*] Waiting for logs. To exit press CTRL+C')
+
+ordem_compra = []
+ordem_venda = []
+
+
+class Ordem:
+    def __init__(self, tipo, ativo, quant, val, broker):
+        self.tipo = tipo
+        self.ativo = ativo
+        self.quant = quant
+        self.val = val
+        self.broker = broker
+
+
+def read_message(routing_key, body):
+    tipo, ativo = routing_key.split('.')
+    body = str(body)
+    quant, val, broker = body.split(',')
+    quant = int(quant.split(':')[1])
+    val = val.split(':')[1]
+    broker = broker.split(':')[1][0:4]  # gets 4 first chars from string
+
+    ordem = Ordem(tipo, ativo, quant, val, broker)
+    if ordem.tipo == 'compra':
+        ordem_compra.append(ordem)
+    else:
+        ordem_venda.append(ordem)
+
+    print("ordem:", tipo, "ativo:", ativo, "qtd:", quant, "val:", val, "broker:", broker)
 
 
 def callback(ch, method, properties, body):
     print(" [x] %r:%r" % (method.routing_key, body))
+    # publish
+    read_message(method.routing_key, body)
+    message = "ok"
+    bolsa_channel.basic_publish(exchange='BOLSADEVALORES', routing_key=method.routing_key, body=message)
 
 
-channel.basic_consume(queue='ordens_venda', on_message_callback=callback, auto_ack=True)
-channel.basic_consume(queue='ordens_compra', on_message_callback=callback, auto_ack=True)
+broker_channel.basic_consume(queue='broker_q', on_message_callback=callback, auto_ack=True)
 
-channel.start_consuming()
+broker_channel.start_consuming()
