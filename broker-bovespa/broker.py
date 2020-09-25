@@ -2,6 +2,8 @@ import os
 import pika
 import sys
 
+from LivroDeOfertas import LivroDeOfertas
+
 
 def main():
     # connection
@@ -34,7 +36,13 @@ def main():
     binding_keys = sys.argv[2:]  # substituir por um arquivo depois (BINDING KEYS PERTINENTES)
     bolsa_channel.queue_bind(exchange='BOLSADEVALORES', queue=queue_name, routing_key='*.*')
 
+    ofertas = LivroDeOfertas()
+
     def callback(ch, method, properties, body):
+        if method.routing_key.split('.')[0] == 'transacao':
+            ofertas.update_transaction(method.routing_key, body)
+        else:
+            ofertas.new_ordem(method.routing_key, body)
         print(" [x] %r:%r" % (method.routing_key, body))
 
     bolsa_channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
