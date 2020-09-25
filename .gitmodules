@@ -1,0 +1,6 @@
+[submodule "bovespa/themes/dimension"]
+	path = bovespa/themes/dimension
+	url = https://github.com/your-identity/hugo-theme-dimension.git
+[submodule "ui-bovespa/themes/dimension"]
+	path = ui-bovespa/themes/dimension
+	url = https://github.com/your-identity/hugo-theme-dimension.git
