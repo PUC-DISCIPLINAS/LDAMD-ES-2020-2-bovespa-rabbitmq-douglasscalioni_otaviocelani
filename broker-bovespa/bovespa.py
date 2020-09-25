@@ -20,13 +20,15 @@ def main():
 
     # exchange
     broker_channel.exchange_declare(exchange='BROKER', exchange_type='topic')
-    bolsa_channel.exchange_declare(exchange='BOLSADEVALORES', exchange_type='topic')
+    bolsa_channel.exchange_declare(
+        exchange='BOLSADEVALORES', exchange_type='topic')
 
     # queues
     broker_channel.queue_declare(queue='broker_q')
 
     # consume
-    broker_channel.queue_bind(exchange='BROKER', queue='broker_q', routing_key='#')
+    broker_channel.queue_bind(
+        exchange='BROKER', queue='broker_q', routing_key='#')
 
     print(' [*] Waiting for logs. To exit press CTRL+C')
 
@@ -37,13 +39,15 @@ def main():
         # publish
         ordem = ofertas.new_ordem(method.routing_key, body)
         message = ordem.get_message()
-        bolsa_channel.basic_publish(exchange='BOLSADEVALORES', routing_key=method.routing_key, body=message)
+        bolsa_channel.basic_publish(
+            exchange='BOLSADEVALORES', routing_key=method.routing_key, body=message)
         transacao = ofertas.make_transaction(ordem)
         if transacao:
             bolsa_channel.basic_publish(exchange='BOLSADEVALORES', routing_key=transacao.get_routing_key(),
                                         body=transacao.get_message())
 
-    broker_channel.basic_consume(queue='broker_q', on_message_callback=callback, auto_ack=True)
+    broker_channel.basic_consume(
+        queue='broker_q', on_message_callback=callback, auto_ack=True)
 
     broker_channel.start_consuming()
 
