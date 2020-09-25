@@ -30,9 +30,11 @@ python broker.py "venda.PTRB" "quant:20,val:25.25,corretora:ABCD"
 
 resultado esperado:
 
- [x] Sent 'compra.PTRB':'compra.PTRB quant:20,val:25.25,corretora:ABCD'
- [x] 'venda.PTRB':b'quant:20,val:25.25,broker:ABCD'
- [x] 'transacao.PTRB':b'data-hora:2020-09-25 19:07:05.369857,corr_vd:ABCD,corr_cp:ABCD,quant:20,val:25.25'
+ `[x] Sent 'compra.PTRB':'compra.PTRB quant:20,val:25.25,corretora:ABCD'`
+ 
+ `[x] 'venda.PTRB':b'quant:20,val:25.25,broker:ABCD'`
+ 
+ `[x] 'transacao.PTRB':b'data-hora:2020-09-25 19:07:05.369857,corr_vd:ABCD,corr_cp:ABCD,quant:20,val:25.25'`
 
 
 
