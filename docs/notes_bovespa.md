@@ -105,10 +105,3 @@ Deverá ser entregue no Github Classroom (convite: [https://classroom.github.com
 - É obrigatória a apresentação de um diagrama de classes no formato UML para ilustrar o sistema e um diagrama de componentes para ilustrar a arquitetura.
 
 ---
-
-#### Notas
-
-##### Entidades
-
-- Corretora
-- Bolsa
