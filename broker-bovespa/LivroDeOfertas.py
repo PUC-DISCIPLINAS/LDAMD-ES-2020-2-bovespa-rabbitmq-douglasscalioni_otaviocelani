@@ -4,7 +4,6 @@ import datetime
 def read_ordem(routing_key, body):
 
     body = body.decode('ascii')
-    print(routing_key, body)
 
     tipo, ativo = routing_key.split('.')
     body = str(body)

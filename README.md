@@ -2,12 +2,16 @@
 
 Disciplina: Laboratório de Desenvolvimento de Aplicações Móveis e Distribuídas 
 
+Data de entrega: 02/10/2020
+
 Alunos:
 
 - Douglas Scalioni Domingues
 - Otávio Celani
 
-### comentários
+Professor: Hugo de Paula
+
+### Antes de mais nada:
 
 O que falta:
 - acessar e modificar o tópicos da corretora
@@ -17,13 +21,22 @@ O que está funcionando:
 - Toda a comunicação do rabbitmq.
 - compra, venda, transação
 
-### execução:
+
+
+### Funcionamento
+
+O diagrama descreve o fluxo de uma ordem de compra/venda, que tem início no *broker* (corretora).
+
+![](C:\Users\dscal\git\github-classroom\bovespa-rabbitmq\notes\diagrama.jpg)
+
+### Execução
 
 Bolsa de valores:
 
    python bovespa.py server
 			
 argumentos: 
+
 - server: URL RabbitMQ (opcional)
 
 Corretora:
@@ -40,7 +53,7 @@ argumentos:
 ex: ABCD -o compra PTRB 20 15.25
                 
 
-### resultado esperado
+### Resultado esperado
 
 roda a bolsa de valores:
 
@@ -60,9 +73,9 @@ em outro broker:
 python broker.py EFGH -o compra PTRB 20 32.25
 
  `[x] Sent 'compra.PTRB':'quant:20,val:32.25,corretora:EFGH'`
- 
+
  `[x] 'compra.PTRB':b'quant:20,val:32.25,broker:EFGH'`
- 
+
  `[x] 'transacao.PTRB':b'data-hora:2020-10-02 18:58:11.550258,corr_vd:ABCD,corr_cp:EFGH,quant:20,val:32.25'`
 
 
