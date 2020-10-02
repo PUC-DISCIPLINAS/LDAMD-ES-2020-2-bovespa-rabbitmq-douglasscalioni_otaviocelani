@@ -1,6 +1,7 @@
 import pika
 import os
 import sys
+import datetime
 from LivroDeOfertas import LivroDeOfertas
 
 
@@ -28,7 +29,7 @@ def main():
     # consume
     broker_channel.queue_bind(exchange='BROKER', queue='broker_q', routing_key='#')
 
-    print(' [*] Waiting for logs. To exit press CTRL+C')
+    print('Bolsa de Valores de São Paulo. \n' + str(datetime.datetime.now()))
 
     ofertas = LivroDeOfertas()
 

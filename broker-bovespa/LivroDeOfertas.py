@@ -1,39 +1,39 @@
 import datetime
 
 
+def read_ordem(routing_key, body):
+
+    body = body.decode('ascii')
+    print(routing_key, body)
+
+    tipo, ativo = routing_key.split('.')
+    body = str(body)
+    quant, val, broker = body.split(',')
+    quant = int(quant.split(':')[1])
+    val = float(val.split(':')[1])
+    broker = broker.split(':')[1][0:4]  # gets 4 first chars from string
+    return tipo, ativo, quant, val, broker
+
+
 class Ordem:
-    def __init__(self, tipo=None, ativo=None, quant=None, val=None, broker=None, routing_key=None, body=None):
-        if routing_key is None or body is None:
-            self.tipo = tipo
-            self.ativo = ativo
-            self.quant = quant
-            self.val = val
-            self.broker = broker
-        else:
-            self.tipo, self.ativo = routing_key.split('.')
-            body = str(body)
-            self.quant, self.val, self.broker = body.split(',')
-            self.quant = int(self.quant.split(':')[1])
-            self.val = float(self.val.split(':')[1])
-            self.broker = self.broker.split(':')[1][0:4]  # gets 4 first chars from string
+    def __init__(self, tipo, ativo, quant, val, broker):
+
+        self.tipo = tipo
+        self.quant = quant
+        self.val = val
+        self.ativo = ativo
+        self.broker = broker
 
     def get_message(self):
-        return "quant:" + str(self.quant) + ",val:" + str(self.val) + ",broker:" + self.broker
+        return "quant:" + str(self.quant) + ",val:" + str(self.val) + ",broker:" + str(self.broker)
 
     def get_routing_key(self):
         return self.tipo + "." + self.ativo
 
 
 class Transacao:
-    '''def __init__(self, ativo, corr_vd, corr_cp, quant, val):
-        self.date = datetime.datetime.now()
-        self.ativo = ativo
-        self.corr_vd = corr_vd
-        self.corr_cp = corr_cp
-        self.quant = quant
-        self.val = val'''
 
-    def __init__(self, ativo, date, corr_vd, corr_cp, quant, val):
+    def __init__(self, ativo, corr_vd, corr_cp, quant, val, date=str(datetime.datetime.now())):
         self.date = date
         self.ativo = ativo
         self.corr_vd = corr_vd
@@ -67,7 +67,8 @@ class LivroDeOfertas:
         return ordem'''
 
     def new_ordem(self, routing_key, body):
-        ordem = Ordem(routing_key=routing_key, body=body)
+        tipo, ativo, quant, val, broker = read_ordem(routing_key, body)
+        ordem = Ordem(tipo, ativo, quant, val, broker)
 
         if ordem.tipo == 'compra':
             self.ordem_compra.append(ordem)
@@ -99,7 +100,7 @@ class LivroDeOfertas:
                     i = self.ordem_venda.index(ordem)
                     self.ordem_venda.__getitem__(i).quant -= n_lotes
                     corr_vd, corr_cp = ordem.broker, o.broker,
-                transacao = Transacao(ordem.ativo, str(datetime.datetime.now()), corr_vd, corr_cp, n_lotes, ordem.val)
+                transacao = Transacao(ordem.ativo, corr_vd, corr_cp, n_lotes, ordem.val)
                 self.transactions.append(transacao)
                 self.ordem_venda = list(filter(lambda x: x.quant == 0, self.ordem_venda))  # filtra as ordens de qtd = 0
                 self.ordem_compra = list(filter(lambda x: x.quant == 0, self.ordem_compra))
