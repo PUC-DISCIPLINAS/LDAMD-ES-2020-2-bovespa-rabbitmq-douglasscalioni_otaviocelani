@@ -27,7 +27,7 @@ O que está funcionando:
 
 O diagrama descreve o fluxo de uma ordem de compra/venda, que tem início no *broker* (corretora).
 
-![](C:\Users\dscal\git\github-classroom\bovespa-rabbitmq\notes\diagrama.jpg)
+![Diagrama](/notes/diagrama.jpg)
 
 ### Execução
 
